@@ -343,6 +343,16 @@ LJ_FUNCA int lj_err_unwind_win(EXCEPTION_RECORD *rec,
 #error "NYI: Windows arch-specific unwinder for JIT-compiled code"
 #endif
 
+/* * 兼容 VC2010 (Windows 7.1 SDK)
+ * 这些 x64 SEH 标志在 Windows 8 SDK 中才被引入。
+ * 如果没有定义，我们手动为旧 SDK 定义它们。
+ */
+#if defined(_MSC_VER) && !defined(UNW_FLAG_NHANDLER)
+#define UNW_FLAG_NHANDLER 0x0
+#define UNW_FLAG_EHANDLER 0x1
+#define UNW_FLAG_UHANDLER 0x2
+#endif
+
 /* Windows unwinder for JIT-compiled code. */
 static void err_unwind_win_jit(global_State *g, int errcode)
 {
